@@ -20,12 +20,13 @@ public class MailConfig {
     private String mailServer;
     private String mailPort;
 
+    @SuppressWarnings("restriction")
     public Properties getProperties(){
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         Properties props = new Properties();
         if( StringUtils.equals(mailProtoc, "pop3")){
-            props.setProperty("mail.pop3.socketFactory.class", SSL_FACTORY);
+//            props.setProperty("mail.pop3.socketFactory.class", SSL_FACTORY);
             props.setProperty("mail.store.protocol", mailProtoc); // 协议
             props.setProperty("mail.pop3.port", mailPort); // 端口
             props.setProperty("mail.pop3.host", mailServer); // pop3服务器
@@ -38,12 +39,15 @@ public class MailConfig {
             props.setProperty("mail.imap.socketFactory.class", SSL_FACTORY);
             props.setProperty("mail.imap.connectiontimeout", "30000");//默认超时连接为30s
             props.setProperty("mail.imap.timeout", "300000");//默认数据读取超时时间为5分钟
-            props.put("mail.event.scope", "session");
+            props.setProperty("mail.imap.ssl.enable", "true");
+            props.setProperty("mail.event.scope", "session");
+            props.setProperty("mail.imap.usesocketchannels", "true");
+            props.setProperty("mail.imaps.usesocketchannels", "true"); 
         }else if(StringUtils.equals(mailProtoc, "smtp")){//smtp
             props.setProperty("mail.smtp.host", mailServer);
             props.setProperty("mail.smtp.port", mailPort);
             props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
+//            props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
             props.setProperty("mail.store.propocol", mailProtoc);
         }
         return props;
